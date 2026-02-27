@@ -2,50 +2,42 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, ArrowLeft, Plus, CheckCircle, X } from 'lucide-react';
 import { useState } from 'react';
 
-// Product data linked to files in the 'public' folder
 const COASTER_PRODUCTS = [
-  { id: 1, name: "Midnight London", desc: "Modern and minimalist black matte finish.", img: "/coasters1.webp" },
-  { id: 2, name: "Artisan Brew", desc: "Warm and natural tones for your coffee.", img: "/coasters2.jpg" },
-  { id: 3, name: "Starlight Slate", desc: "Polished natural stone texture and elegance.", img: "/coasters3.jpg" },
-  { id: 4, name: "Cloud Marble", desc: "Fresh and airy ceramic touch.", img: "/coasters4.webp" }
+  { id: 'c1', name: "Midnight London", price: 5, desc: "Modern and minimalist black matte finish.", image: "/coasters1.webp" },
+  { id: 'c2', name: "Artisan Brew", price: 5, desc: "Warm and natural tones for your coffee.", image: "/coasters2.jpg" },
+  { id: 'c3', name: "Starlight Slate", price: 5, desc: "Polished natural stone texture.", image: "/coasters3.jpg" },
+  { id: 'c4', name: "Cloud Marble", price: 5, desc: "Fresh and airy ceramic touch.", image: "/coasters4.webp" }
 ];
 
-export default function CoastersPage({ onBack, cartCount, setCartCount }) {
+export default function CoastersPage({ onBack, cartCount, onAddToCart, onOpenCart }) {
   const [addedId, setAddedId] = useState(null);
-  const [selectedImg, setSelectedImg] = useState(null); // State for the enlarged image
+  const [selectedImg, setSelectedImg] = useState(null);
 
-  const handleAddToCart = (e, id) => {
-    e.stopPropagation(); // Prevents the image from enlarging when clicking the add button
-    setCartCount(prev => prev + 1);
-    setAddedId(id);
+  const handleAdd = (e, product) => {
+    e.stopPropagation();
+    onAddToCart(product);
+    setAddedId(product.id);
     setTimeout(() => setAddedId(null), 1500);
   };
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-[#2D2D2D]">
-      {/* Lightbox Modal - Appears when an image is selected */}
+      {/* Lightbox Modal */}
       <AnimatePresence>
         {selectedImg && (
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedImg(null)} // Closes when clicking the background
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            onClick={() => setSelectedImg(null)} 
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 cursor-zoom-out"
           >
-            <motion.button 
-              className="absolute top-10 right-10 text-white hover:rotate-90 transition-transform"
-              onClick={() => setSelectedImg(null)}
-            >
-              <X size={40} />
-            </motion.button>
+            <button className="absolute top-10 right-10 text-white"><X size={40} /></button>
             <motion.img 
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
+              initial={{ scale: 0.8 }} 
+              animate={{ scale: 1 }} 
               src={selectedImg} 
-              className="max-w-full max-h-full object-contain shadow-2xl rounded-sm"
-              alt="Enlarged View"
+              className="max-w-full max-h-full object-contain shadow-2xl rounded-sm" 
             />
           </motion.div>
         )}
@@ -53,75 +45,49 @@ export default function CoastersPage({ onBack, cartCount, setCartCount }) {
 
       <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-stone-100 py-4 px-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <button onClick={onBack} className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-bold hover:text-[#C66B44] transition-colors">
-            <ArrowLeft size={16} /> Back to Gallery
+          <button onClick={onBack} className="flex items-center gap-2 text-xs uppercase tracking-widest font-bold hover:text-[#C66B44] transition-all">
+            <ArrowLeft size={16}/> Back
           </button>
-          <span className="font-serif text-2xl font-medium tracking-tighter italic">Honor Art</span>
-          <div className="relative cursor-pointer">
-            <ShoppingBag size={22} />
+          <span className="font-serif text-2xl tracking-tighter italic">Honor Art</span>
+          <button onClick={onOpenCart} className="relative p-2">
+            <ShoppingBag size={24}/>
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#C66B44] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              <span className="absolute top-0 right-0 bg-[#C66B44] text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">
                 {cartCount}
               </span>
             )}
-          </div>
+          </button>
         </div>
       </nav>
 
       <main className="max-w-7xl mx-auto px-6 pt-32 pb-24 text-center">
-        <div className="mb-20">
-          <h1 className="text-5xl font-serif mb-4">Premium Coasters</h1>
-          <p className="text-stone-500 max-w-xl mx-auto font-light leading-relaxed">
-            Every sip is an experience. Protect your surfaces with our handcrafted coasters designed like pieces of art.
-          </p>
-        </div>
-
+        <h1 className="text-5xl font-serif mb-4">Premium Coasters</h1>
+        <p className="text-stone-500 max-w-xl mx-auto font-light mb-20">Artisan handcrafted coasters that protect your surfaces with style.</p>
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 text-left">
-          {COASTER_PRODUCTS.map((product) => (
-            <motion.div 
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="group"
-            >
-              {/* Selecting the image opens the modal */}
-              <div 
-                onClick={() => setSelectedImg(product.img)}
-                className="aspect-square bg-white rounded-2xl overflow-hidden mb-6 relative shadow-sm border border-stone-100 cursor-zoom-in"
-              >
-                <img 
-                  src={product.img} 
-                  alt={product.name} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
-                
+          {COASTER_PRODUCTS.map(product => (
+            <motion.div key={product.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="group">
+              <div onClick={() => setSelectedImg(product.image)} className="aspect-square bg-white rounded-2xl overflow-hidden mb-6 relative shadow-sm border border-stone-50 cursor-zoom-in">
+                <img src={product.image} className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700" alt={product.name} />
                 <button 
-                  onClick={(e) => handleAddToCart(e, product.id)}
-                  className="absolute bottom-4 right-4 bg-white p-3 rounded-full shadow-lg hover:bg-[#2D2D2D] hover:text-white transition-all transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 z-10"
+                  onClick={(e) => handleAdd(e, product)} 
+                  className="absolute bottom-4 right-4 bg-white p-3 rounded-full shadow-lg hover:bg-[#2D2D2D] hover:text-white transition-all opacity-0 group-hover:opacity-100 z-10"
                 >
                   {addedId === product.id ? <CheckCircle size={20} className="text-green-500" /> : <Plus size={20} />}
                 </button>
               </div>
-              <div className="flex justify-between items-start mb-2 font-serif">
+              <div className="flex justify-between items-start font-serif">
                 <h3 className="text-xl">{product.name}</h3>
-                <span className="text-lg text-[#C66B44] font-bold font-serif">$5</span>
+                <span className="text-[#C66B44] font-bold">$5</span>
               </div>
-              <p className="text-sm text-stone-400 font-light mb-6 h-10 italic">{product.desc}</p>
-              <button 
-                onClick={() => alert("Redirecting to checkout...")} 
-                className="w-full py-4 bg-[#2D2D2D] text-white rounded-xl text-[10px] uppercase tracking-widest font-bold hover:bg-black transition-all"
-              >
-                Buy Now
+              <p className="text-sm text-stone-400 mt-1 mb-6 italic h-10">{product.desc}</p>
+              <button onClick={onOpenCart} className="w-full py-4 bg-[#2D2D2D] text-white rounded-xl text-[10px] uppercase font-bold tracking-widest hover:bg-black transition-all">
+                View in Cart
               </button>
             </motion.div>
           ))}
         </div>
       </main>
-      
-      <footer className="py-12 border-t border-stone-200 text-center text-[10px] uppercase tracking-widest text-stone-400 font-medium">
-        Handcrafted with Care &bull; © 2026 Honor Art
-      </footer>
     </div>
   );
 }

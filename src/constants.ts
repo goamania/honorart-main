@@ -4,20 +4,26 @@ export const CATEGORIES: Category[] = [
   {
     id: 'coasters',
     name: 'Coasters',
-    image: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?auto=format&fit=crop&q=80&w=800',
-    description: 'Protect your surfaces with elegance. Hand-painted ceramic and natural stone.'
+    // public klasöründeki brerw.jpg görselini kullanıyoruz
+    image: '/brerw.jpg',
+    description: 'Protect your surfaces with elegance. Hand-painted ceramic and natural stone.',
+    path: '/coasters'
   },
   {
     id: 'magnets',
     name: 'Magnets',
-    image: 'https://images.unsplash.com/photo-1590424753858-394a12a5ec2c?auto=format&fit=crop&q=80&w=800',
-    description: 'Small pieces of art for your most-visited space. Strong, beautiful, and functional.'
+    // public klasöründeki magnet.jpg görselini kullanıyoruz
+    image: '/magnet.jpg',
+    description: 'Small pieces of art for your most-visited space. Strong, beautiful, and functional.',
+    path: '/magnets'
   },
   {
     id: 'trivets',
     name: 'Trivets',
-    image: 'https://images.unsplash.com/photo-1584346133934-a3afd2a33c4c?auto=format&fit=crop&q=80&w=800',
-    description: 'Heat-resistant mats that double as wall art. For teapots, pans, and style.'
+    // public klasöründeki Trivets.webp görselini kullanıyoruz
+    image: '/Trivets.webp',
+    description: 'Heat-resistant mats that double as wall art. For teapots, pans, and style.',
+    path: '/trivets'
   }
 ];
 
